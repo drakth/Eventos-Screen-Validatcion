@@ -1,0 +1,18 @@
+*&---------------------------------------------------------------------*
+*& Include          ZEVENTOS_SEL
+*&---------------------------------------------------------------------*
+
+SELECTION-SCREEN BEGIN OF BLOCK b1 WITH FRAME TITLE TEXT-001.
+  PARAMETERS: p_carrid TYPE s_carr_id,
+              p_connid TYPE s_conn_id,
+              p_date   TYPE s_date,
+
+              r_but1   RADIOBUTTON GROUP g1,
+              r_but2   RADIOBUTTON GROUP g1,
+              r_but3   RADIOBUTTON GROUP g2,
+              r_but4   RADIOBUTTON GROUP g2.
+SELECTION-SCREEN END OF BLOCK b1.
+
+SELECTION-SCREEN BEGIN OF BLOCK b2 WITH FRAME TITLE TEXT-002.
+  PARAMETERS: c_check1 AS CHECKBOX DEFAULT space.
+SELECTION-SCREEN END OF BLOCK b2.

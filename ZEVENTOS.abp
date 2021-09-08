@@ -1,0 +1,100 @@
+*&---------------------------------------------------------------------*
+*& Report ZEVENTOS
+*&---------------------------------------------------------------------*
+*&
+*&---------------------------------------------------------------------*
+REPORT zeventos NO STANDARD PAGE HEADING line-count 8(3).
+
+INCLUDE zeventos_top.
+INCLUDE zeventos_f01.
+INCLUDE zeventos_sel.
+
+"Cuando se carga un programa, antes de ejecutar nada.
+LOAD-OF-PROGRAM.
+
+"Cuando se carga la pantalla de seleccion pero antes de mostrarla al usuario.
+INITIALIZATION.
+  gv_numero = 5.
+
+"Justo antes de mostrar la pantalla de seleccion, se puede manipular la pantalla
+"usando por ejemplo un loop at screen.
+AT SELECTION-SCREEN OUTPUT.
+  LOOP AT SCREEN.
+
+    IF screen-name = 'P_CONNID'.
+      screen-input = abap_false.
+      MODIFY SCREEN.
+    ENDIF.
+
+  ENDLOOP.
+
+"Se usa cuando el sistema procesa la pantalla de seleccion.
+"Se puede usar cuando el usuario presiona enter en la pantalla de seleccion, por lo general
+"para hacer validaciones.
+"Si mostramos algun mensaje de error aca toda la pantalla de seleccion es editable.
+AT SELECTION-SCREEN.
+*  MESSAGE 'Mensaje de error' TYPE 'E'.
+  IF 1 = 2.
+
+  ENDIF.
+
+"Si le especificamos algun campo especifico a la pantalla de seleccion y
+"mostramos un mensaje de error, solo ese campo que indicamos quedara editable.
+AT SELECTION-SCREEN ON p_carrid.
+  IF p_carrid IS INITIAL.
+    MESSAGE 'Aerolinea vacio.' TYPE 'E'.
+  ENDIF.
+
+AT SELECTION-SCREEN ON p_date.
+  IF p_date IS INITIAL.
+    MESSAGE 'Fecha vacia.' TYPE 'E'.
+  ENDIF.
+
+AT SELECTION-SCREEN ON RADIOBUTTON GROUP g1.
+  IF r_but1 IS NOT INITIAL.
+    MESSAGE 'G1 seleccionado.' TYPE 'E'.
+  ENDIF.
+
+AT SELECTION-SCREEN ON RADIOBUTTON GROUP g2.
+  IF r_but3 IS NOT INITIAL.
+    MESSAGE 'G2 seleccionado.' TYPE 'E'.
+  ENDIF.
+
+AT SELECTION-SCREEN ON BLOCK b2.
+  IF c_check1 IS INITIAL.
+    MESSAGE 'Checkbox no activo' TYPE 'E'.
+  ENDIF.
+
+"Para procesar cambios en un campo en particular de la pantalla, como por ejemplo teclas F1 a F4.
+AT SELECTION-SCREEN ON HELP-REQUEST FOR p_carrid. "F1
+  MESSAGE 'F1 apretado!' TYPE 'S'.
+
+AT SELECTION-SCREEN ON VALUE-REQUEST FOR p_carrid. "F4
+  MESSAGE 'F4 Apretado!' TYPE 'S'.
+
+"Cuando se hacen reportes con WRITE, se usa para imprimir en el principio de la pagina (Cabecera)
+TOP-OF-PAGE.
+  WRITE 'TOP OF PAGE'.
+
+NEW-PAGE.
+  WRITE 'NEW PAGE'.
+
+"Cuando se hacen reportes con WRITE, se usa para imprimir en el final de la pagina (Footer)
+END-OF-PAGE.
+  WRITE: 'Page no', sy-pagno.
+  ULINE.
+
+  "Se ejecuta cuando el usuario apreta F8 despues de que terminaron todos los eventos anteriores.
+
+START-OF-SELECTION.
+"Indicamos cuantas lineas tendra una pagina
+  NEW-PAGE LINE-COUNT 100.
+
+  DO 500 TIMES.
+    WRITE gv_numero.
+    ULINE.
+  ENDDO.
+
+"End of selection por lo general se usa en el caso que estemos usando base de datos logicas,
+"cuando se termina con la ejecucion de estas entoences se procesa lo que contenga este evento.
+END-OF-SELECTION.
